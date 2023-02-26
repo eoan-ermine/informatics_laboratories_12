@@ -22,6 +22,9 @@ def create_post(request):
 				"text": request.POST["text"], "title": request.POST["title"]
 			}
 			if form["text"] and form["title"]:
+				if Article.objects.filter(title=form["title"]).exists():
+					form["errors"] = "Статья с таким заголовком уже существует"
+					return render(request, "create_post.html", {"form": form})
 				article = Article.objects.create(text=form["text"], title=form["title"], author=request.user)
 				return redirect("get_article", article_id=article.id)
 			else:
